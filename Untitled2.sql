@@ -24,3 +24,20 @@ INSERT INTO employee (emp_id, emp_name, dept_id, job_title, salary, hire_date) V
 INSERT INTO employee (emp_id, emp_name, dept_id, job_title, salary, hire_date) VALUES (115, 'Pooja Deshmukh',  10, 'Software Engineer', 53000, TO_DATE('2022-05-22','YYYY-MM-DD'));
 
 COMMIT;
+
+
+
+select emp_id,emp_name,dept_id, ROW_NUMBER()over (partition by dept_id order by salary) as rn from employee;
+
+SELECT emp_name FROM employee e WHERE EXISTS (SELECT 1 FROM department d WHERE e.dept_id = d.dept_id);
+
+EXPLAIN PLAN FOR 
+SELECT emp_name, salary
+FROM employee
+WHERE dept_id = 10
+ORDER BY salary DESC;
+
+
+SELECT * FROM TABLE(DBMS_XPLAN.display)
+
+CREATE INDEX idx_employee_deptid ON employee(dept_id);
