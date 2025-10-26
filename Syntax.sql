@@ -22,3 +22,29 @@ BEGIN
 EXCEPTION
    -- Optional error handling
 END;
+
+
+CURSOR cursor_name IS
+    SELECT columns FROM table;
+
+OPEN cursor_name;
+FETCH cursor_name INTO variables;
+CLOSE cursor_name;
+
+DECLARE
+    CURSOR cursor_name IS
+        SELECT ...;
+
+    v_variable datatype;
+BEGIN
+    OPEN cursor_name;
+
+    LOOP
+        FETCH cursor_name INTO v_variable;
+        EXIT WHEN cursor_name%NOTFOUND;
+        -- processing
+    END LOOP;
+
+    CLOSE cursor_name;
+END;
+/
