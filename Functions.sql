@@ -37,6 +37,7 @@ EXCEPTION
         RETURN NULL;
 END;
 
+select get_emp_salary(101) salary from dual;
 
 CREATE OR REPLACE FUNCTION get_emp_name (p_emp_id NUMBER)
 RETURN VARCHAR2

@@ -48,3 +48,13 @@ BEGIN
     CLOSE cursor_name;
 END;
 /
+
+CREATE OR REPLACE TRIGGER trigger_name
+BEFORE | AFTER
+INSERT | UPDATE | DELETE
+ON table_name
+[FOR EACH ROW]  -- (Row-level trigger)
+BEGIN
+    -- Code to execute
+END;
+/

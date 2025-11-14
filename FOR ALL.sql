@@ -206,8 +206,47 @@ END;
 
 8)Copy the first 20 employees to a duplicate table employee_backup using BULK COLLECT + FORALL.
 
+DECLARE
+    TYPE emp_tab IS TABLE OF employee%ROWTYPE;
+    l_emp_tab emp_tab;
+BEGIN
+    SELECT * BULK COLLECT INTO l_emp_tab
+    FROM (
+        SELECT * FROM employee ORDER BY emp_id)
+    WHERE ROWNUM <= 20;
+    
+    FORALL i IN 1..l_emp_tab.COUNT
+        INSERT INTO employee_backup VALUES l_emp_tab(i);
+    
+    COMMIT;
+END;
 
 
+9)Bulk update salaries, but if some EMP_ID doesn’t exist, continue execution and later print failed index count.
 
+DECLARE
+    TYPE t_empdata IS TABLE OF employee.emp_id%type;
+    l_empdata t_empdata;
+    v_failed_count NUMBER := 0;
+BEGIN
+    SELECT emp_id BULK COLLECT INTO l_empdata
+    FROM employee;
 
+        FORALL i IN 1..l_empdata.COUNT SAVE EXCEPTIONS
+            UPDATE employee SET salary=salary+1 WHERE emp_id=l_empdata(i);
+        COMMIT;
+        DBMS_OUTPUT.PUT_LINE('Total Updated Rows: '|| SQL%ROWCOUNT);
+EXCEPTION
+    WHEN OTHERS THEN
+        v_failed_count := SQL%BULK_EXCEPTIONS.COUNT;
+        DBMS_OUTPUT.PUT_LINE('Failed Updates: '|| v_failed_count);
+        
+        FOR i IN 1..v_failed_count LOOP
+            DBMS_OUTPUT.PUT_LINE(
+                'Index: ' || SQL%BULK_EXCEPTIONS(i).ERROR_INDEX ||
+                ', Error Code: ' || SQL%BULK_EXCEPTIONS(i).ERROR_CODE
+            );
+        END LOOP;
+END;
 
+SET SERVEROUTPUT ON;

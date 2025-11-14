@@ -49,7 +49,7 @@ BEGIN
 END;
 
 ACCEPT P_DEPT NUMBER PROMPT 'Enter Department ID: ';
-
+set serveroutput on 
 DECLARE
     CURSOR c_dept(p_dept NUMBER) IS
         SELECT emp_name, dept_id 
